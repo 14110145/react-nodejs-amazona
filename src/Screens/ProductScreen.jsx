@@ -1,11 +1,12 @@
 import React, { Fragment } from "react";
-import data from "../data";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 function ProductScreen(props) {
   const { match } = props;
-  console.log(match.params);
-  const product = data.products.find((x) => x._id === match.params.id) || "Not found...";
+  const productList = useSelector((state) => state.productList);
+  const { products } = productList;
+  const product = products.find((x) => x._id === match.params.id) || "Not found...";
   return (
     <Fragment>
       <div className="back-to-result">
