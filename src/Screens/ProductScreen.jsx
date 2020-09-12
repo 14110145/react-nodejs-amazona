@@ -1,61 +1,84 @@
-import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import React, { Fragment, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { detailsProduct } from "../actions/productActions";
 
 function ProductScreen(props) {
+  const [qty, setQty] = useState(1);
   const { match } = props;
-  const productList = useSelector((state) => state.productList);
-  const { products } = productList;
-  const product = products.find((x) => x._id === match.params.id) || "Not found...";
+  const productDetails = useSelector((state) => state.productDetails);
+  const { product, loading, error } = productDetails;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(detailsProduct(match.params.id));
+    return () => {};
+  }, []);
+
+  const handleAddToCart = () => {
+    props.history.push("/cart/" + match.params.id + "?qty=" + qty);
+  };
+
   return (
     <Fragment>
       <div className="back-to-result">
         <Link to="/">Back to result</Link>
       </div>
-      <div className="details">
-        <div className="details-image">
-          <img src={product.image} alt="product" />
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
+        <div className="details">
+          <div className="details-image">
+            <img src={product.image} alt="product" />
+          </div>
+          <div className="details-info">
+            <ul>
+              <li>
+                <h4>
+                  <li>{product.name}</li>
+                </h4>
+              </li>
+              <li>
+                {product.rating} Stars ({product.numReviews} Reviews)
+              </li>
+              <li>
+                <b>${product.price}</b>
+              </li>
+              <li>
+                Description:
+                {product.description}
+              </li>
+            </ul>
+          </div>
+          <div className="details-action">
+            <ul>
+              <li>
+                Price: <b>${product.price}</b>
+              </li>
+              <li>Status: {product.countInStock > 0 ? "In Stock" : "Unavailable"}</li>
+              <li>
+                Qty{" "}
+                <select value={qty} onChange={(e) => setQty(e.target.value)}>
+                  {[...Array(product.countInStock).keys()].map((x) => (
+                    <option key={x + 1} value={x + 1}>
+                      {x + 1}
+                    </option>
+                  ))}
+                </select>
+              </li>
+              <li>
+                {product.countInStock > 0 && (
+                  <button onClick={handleAddToCart} className="button primary">
+                    Add to card
+                  </button>
+                )}
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="details-info">
-          <ul>
-            <li>
-              <h4>
-                <li>{product.name}</li>
-              </h4>
-            </li>
-            <li>
-              {product.rating} Stars ({product.numReviews} Reviews)
-            </li>
-            <li>
-              <b>${product.price}</b>
-            </li>
-            <li>
-              Description:
-              {product.description}
-            </li>
-          </ul>
-        </div>
-        <div className="details-action">
-          <ul>
-            <li>
-              Price: <b>${product.price}</b>
-            </li>
-            <li>Status: {product.status}</li>
-            <li>
-              Qty:{" "}
-              <select>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </li>
-            <li>
-              <button className="button primary">Add to card</button>
-            </li>
-          </ul>
-        </div>
-      </div>
+      )}
     </Fragment>
   );
 }
