@@ -18,7 +18,7 @@ function App() {
         <header className="header">
           <div className="brand">
             <button onClick={openMenu}>&#9776;</button>
-            <Link to="/">Amazona</Link>
+            <Link to="/">amazona</Link>
           </div>
           <div className="header-links">
             <a href="cart.html">Cart</a>
