@@ -8,7 +8,6 @@ function CartScreen(props) {
   const dispatch = useDispatch();
 
   const { cartItems } = cart;
-
   const productId = props.match.params.id;
   const qty = props.location.search ? Number(props.location.search.split("=")[1]) : 1;
 
@@ -23,6 +22,7 @@ function CartScreen(props) {
     if (productId) {
       dispatch(addToCart(productId, qty));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="cart">
@@ -36,7 +36,7 @@ function CartScreen(props) {
             <div>Cart is empty</div>
           ) : (
             cartItems.map((item) => (
-              <li>
+              <li key={item.product}>
                 <div className="cart-image">
                   <img src={item.image} alt="product" />
                 </div>

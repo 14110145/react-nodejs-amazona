@@ -4,20 +4,15 @@ import { Link } from "react-router-dom";
 import { listProducts } from "../actions/productActions";
 
 function HomeScreen(props) {
-  // const [products, setProduct] = useState([]);
   const productList = useSelector((state) => state.productList);
 
   const { products, error, loading } = productList;
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const { data } = await axios.get("/api/products");
-    //   setProduct(data);
-    // };
-    // fetchData();
     dispatch(listProducts());
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return loading ? (
     <div>Loading...</div>
