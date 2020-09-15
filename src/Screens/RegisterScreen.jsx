@@ -9,7 +9,7 @@ function RegisterScreen(props) {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const userRegister = useSelector((state) => state.userRegister);
-  console.log(userRegister);
+  const redirect = props.location.search ? props.location.search.split("=")[1] : "/";
   const { loading, error, userInfo } = userRegister;
 
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ function RegisterScreen(props) {
 
   useEffect(() => {
     if (userInfo) {
-      props.history.push("/");
+      props.history.push(redirect);
     }
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +84,8 @@ function RegisterScreen(props) {
             </button>
           </li>
           <li>
-            Already have an account? <Link to="/signin">Sign-In</Link>
+            Already have an account?{" "}
+            <Link to={redirect === "/" ? "signin" : "signin?redirect=" + redirect}>Sign-In</Link>
           </li>
         </ul>
       </form>

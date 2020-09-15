@@ -7,25 +7,23 @@ function SigninScreen(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const userSignin = useSelector((state) => state.userSignin);
-  console.log(userSignin);
   const { loading, error, userInfo } = userSignin;
+  const redirect = props.location.search ? props.location.search.split("=")[1] : "/";
 
   const dispatch = useDispatch();
-
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(signin(email, password));
   };
 
-  
-
   useEffect(() => {
-    if (userInfo.name) {
-      props.history.push("/");
+    if (userInfo) {
+      props.history.push(redirect);
     }
     return () => {};
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo.name]);
+  }, [userInfo]);
 
   return (
     <div className="form">
@@ -65,7 +63,10 @@ function SigninScreen(props) {
           </li>
           <li>New to amazona?</li>
           <li>
-            <Link to="/register" className="button secondary text-center">
+            <Link
+              to={redirect === "/" ? "register" : "register?redirect=" + redirect}
+              className="button secondary text-center"
+            >
               Create account
             </Link>
           </li>
